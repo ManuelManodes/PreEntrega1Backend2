@@ -2,12 +2,19 @@
 
 <div class="container">
   <div class="card card-sm">
+    <!-- Mostrar mensaje de error si existe -->
+    {{#if error}}
+      <div class="error-message" style="color: red; margin-bottom: 20px;">
+        {{error}}
+      </div>
+    {{/if}}
+
     <form action="/api/users/login" method="post">
       <label for="email">Email</label>
-      <input type="email" name="email" id="email" />
+      <input type="email" name="email" id="email" required />
 
       <label for="password">Password</label>
-      <input type="password" name="password" id="password" />
+      <input type="password" name="password" id="password" required />
 
       <!-- Contenedor para el botón, con margen superior para separarlo -->
       <div class="button-container" style="margin-top: 20px;">
