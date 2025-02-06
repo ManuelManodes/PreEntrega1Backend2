@@ -1,6 +1,7 @@
 import { Router } from "express";
 import usersModel from "../models/users.model.js";
 import { isValidPassword, createHash, generateToken } from "../utils/index.js";
+import passport from "passport";
 
 const router = Router();
 
@@ -22,36 +23,21 @@ router.get("/", async (req, res) => {
 
 // Ruta para registrar un nuevo usuario
 router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, password, role } = req.body;
-
-  // Validar que todos los campos obligatorios estén presentes
-  if (!first_name || !last_name || !email || !password) {
-    return res.status(400).json({ status: "Error", error: "All fields are required" });
-  }
+  const { first_name, last_name, email, age, password, role } = req.body;
 
   try {
-    // Verificar si el usuario ya existe
-    const existingUser = await usersModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ status: "Error", error: "User already exists" });
-    }
-
-    // Crear un nuevo usuario con la contraseña hasheada
-    const newUser = {
+    const hashedPassword = createHash(password);
+    const newUser = new usersModel({
       first_name,
       last_name,
       email,
-      password: createHash(password),
-    };
+      age,
+      password: hashedPassword,
+      role: "user",
+    });
 
-    // Asignar un rol si se proporciona
-    if (role) newUser.role = role;
-
-    // Guardar el usuario en la base de datos
-    await usersModel.create(newUser);
-
-    // Redirigir al login después del registro
-    res.redirect("/login");
+    await newUser.save();
+    res.status(201).json({ status: "Ok", payload: newUser });
   } catch (error) {
     res.status(500).json({ status: "Error", error: error.message });
   }
@@ -98,4 +84,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Ruta para cerrar sesión
+router.post("/logout", (req, res) => {
+  res.clearCookie("tokenCookie");
+  res.redirect("/");
+});
+
+// Ruta para obtener el usuario actual
+router.get("/current", passport.authenticate('jwt', { session: false }), (req, res) => {
+  const user = req.user;
+  res.render("current", { title: "CURRENT", user });
+});
+
 export default router;
+

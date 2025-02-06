@@ -16,6 +16,11 @@ const UserSchema = new Schema({
         default: "user"
     },
     password: String,
+
+    cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'Cart'
+    }
 });
 
 export default model("User", UserSchema);

@@ -2,16 +2,36 @@
 
 <div class="container">
   <div class="card card-sm">
+    <!-- Mostrar mensaje de error si existe -->
+    {{#if error}}
+      <div class="error-message" style="color: red; margin-bottom: 20px;">
+        {{error}}
+      </div>
+    {{/if}}
+
     <form action="/api/users/register" method="post">
-      <label for="first_name">First Name</label>
-      <input type="first_name" name="first_name" id="first_name" />
-      <label for="last_name">Last Name</label>
-      <input type="last_name" name="last_name" id="last_name" />
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" />
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" />
-      <button type="submit" class="right">Register</button>
+      <label for="Nombre">First Name</label>
+      <input type="text" name="first_name" id="first_name" required />
+
+      <label for="Apellido">Last Name</label>
+      <input type="text" name="last_name" id="last_name" required />
+
+      <label for="Correo electrónico">Email</label>
+      <input type="email" name="email" id="email" required />
+
+      <label for="Edad">Age</label>
+      <input type="number" name="age" id="age" min="0" required />
+
+      <label for="Rol">Role</label>
+      <input type="text" name="role" id="role" value="user" required />
+
+      <label for="Contraseña">Password</label>
+      <input type="password" name="password" id="password" required />
+
+      <!-- Contenedor para el botón, con margen superior para separarlo -->
+      <div class="button-container" style="margin-top: 20px;">
+        <button type="submit" class="right">Register</button>
+      </div>
     </form>
   </div>
 </div>
